@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "clawdnotify",
-      "source": ".",
+      "source": "..",
       "description": "Native macOS notifications for Claude Code with bell attention",
       "version": "1.0.0"
     }
