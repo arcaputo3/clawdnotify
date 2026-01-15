@@ -13,7 +13,7 @@ Native macOS notifications for [Claude Code](https://claude.ai/claude-code) with
 
 ## Installation
 
-### Option 1: Claude Code Plugin (Recommended)
+In Claude Code, run:
 
 ```
 /plugin marketplace add arcaputo3/clawdnotify
@@ -22,15 +22,8 @@ Native macOS notifications for [Claude Code](https://claude.ai/claude-code) with
 
 The app builds automatically on your first Claude Code session.
 
-### Option 2: Homebrew
-
-```bash
-brew tap arcaputo3/clawdnotify
-brew install clawdnotify
-clawdnotify-install
-```
-
-### Option 3: Manual Install
+<details>
+<summary>Manual installation</summary>
 
 ```bash
 git clone https://github.com/arcaputo3/clawdnotify.git
@@ -38,7 +31,7 @@ cd clawdnotify
 ./scripts/install.sh
 ```
 
-Then add these hooks to your Claude Code `settings.json`:
+Then add to your Claude Code `settings.json`:
 
 ```json
 {
@@ -48,6 +41,7 @@ Then add these hooks to your Claude Code `settings.json`:
   }
 }
 ```
+</details>
 
 ## How It Works
 
