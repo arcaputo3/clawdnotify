@@ -1,0 +1,17 @@
+# Build artifacts
+app/ClawdNotify.app/
+*.o
+*.dSYM/
+
+# macOS
+.DS_Store
+._*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Runtime files
+.claude-notify-params

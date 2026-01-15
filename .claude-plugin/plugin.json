@@ -1,0 +1,11 @@
+{
+  "name": "clawdnotify",
+  "version": "1.0.0",
+  "description": "Native macOS notifications for Claude Code with bell attention indicator",
+  "author": {
+    "name": "Richie Caputo"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/arcaputo3/clawdnotify",
+  "hooks": "../hooks/hooks.json"
+}
