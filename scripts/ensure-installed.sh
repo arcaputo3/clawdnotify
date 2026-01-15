@@ -27,7 +27,11 @@ swiftc -O -o ClawdNotify -target "$TARGET" Sources/main.swift 2>/dev/null || exi
 mkdir -p "$APP_PATH/Contents/MacOS" "$APP_PATH/Contents/Resources"
 cp ClawdNotify "$APP_PATH/Contents/MacOS/"
 cp Info.plist "$APP_PATH/Contents/"
-[ -f "$PLUGIN_ROOT/assets/clawd.icns" ] && cp "$PLUGIN_ROOT/assets/clawd.icns" "$APP_PATH/Contents/Resources/AppIcon.icns"
+if [ -f "$PLUGIN_ROOT/assets/clawd.icns" ]; then
+    cp "$PLUGIN_ROOT/assets/clawd.icns" "$APP_PATH/Contents/Resources/AppIcon.icns"
+    /usr/libexec/PlistBuddy -c "Add :CFBundleIconFile string AppIcon" "$APP_PATH/Contents/Info.plist" 2>/dev/null || \
+    /usr/libexec/PlistBuddy -c "Set :CFBundleIconFile AppIcon" "$APP_PATH/Contents/Info.plist"
+fi
 
 # Copy notify script
 cp "$PLUGIN_ROOT/hooks/notify.sh" "$INSTALL_DIR/"
