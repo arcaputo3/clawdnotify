@@ -6,6 +6,5 @@
     "name": "Richie Caputo"
   },
   "license": "MIT",
-  "repository": "https://github.com/arcaputo3/clawdnotify",
-  "hooks": "./hooks/hooks.json"
+  "repository": "https://github.com/arcaputo3/clawdnotify"
 }
