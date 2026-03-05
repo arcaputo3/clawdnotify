@@ -28,6 +28,7 @@ fi
 
 # Check if user is focused on this session
 is_focused=false
+pane_visible=false
 
 # Get frontmost app info
 frontmost_name=$(osascript -e 'tell application "System Events" to get name of first application process whose frontmost is true' 2>/dev/null | tr '[:upper:]' '[:lower:]')
@@ -42,16 +43,23 @@ esac
 
 # Determine if this session is focused
 if [ "$terminal_focused" = "true" ]; then
-    if [ -n "$TMUX" ]; then
-        # In tmux: also check if this window and pane are active
-        window_active=$(tmux display-message -p '#{window_active}' 2>/dev/null)
-        pane_active=$(tmux display-message -p '#{pane_active}' 2>/dev/null)
-        if [ "$window_active" = "1" ] && [ "$pane_active" = "1" ]; then
+    if [ -n "$TMUX" ] && [ -n "$TMUX_PANE" ]; then
+        # In tmux: check pane, window, and session separately
+        pane_info=$(tmux display-message -p -t "$TMUX_PANE" '#{pane_active} #{window_active} #{session_attached}' 2>/dev/null)
+        pane_active=$(echo "$pane_info" | cut -d' ' -f1)
+        window_active=$(echo "$pane_info" | cut -d' ' -f2)
+        session_attached=$(echo "$pane_info" | cut -d' ' -f3)
+        if [ "$pane_active" = "1" ] && [ "$window_active" = "1" ] && [ "$session_attached" = "1" ]; then
             is_focused=true
+        fi
+        # Pane is visible if the window and session are active (even if a different pane is selected)
+        if [ "$window_active" = "1" ] && [ "$session_attached" = "1" ]; then
+            pane_visible=true
         fi
     else
         # Not in tmux: terminal frontmost means focused
         is_focused=true
+        pane_visible=true
     fi
 fi
 
@@ -67,8 +75,19 @@ else
     subtitle="Ready for input"
 fi
 
-# Show notification only if not in terminal (bell handles in-terminal alerts)
+# Determine whether to show notification
+# Show when: terminal not focused, or pane in a different tmux window/session
+show_notification=false
 if [ "$terminal_focused" = "false" ]; then
-    printf '%s\n%s\n%s\n' "Claude Code" "$subtitle" "$context" > "$HOME/.claude-notify-params"
+    show_notification=true
+elif [ "$pane_visible" = "false" ]; then
+    # Terminal is frontmost but pane is in a different tmux window/session
+    show_notification=true
+fi
+
+if [ "$show_notification" = "true" ]; then
+    # Include tmux pane ID so the app can focus the right pane on click
+    tmux_pane="${TMUX_PANE:-}"
+    printf '%s\n%s\n%s\n%s\n' "Claude Code" "$subtitle" "$context" "$tmux_pane" > "$HOME/.claude-notify-params"
     open "$HOME/.clawdnotify/ClawdNotify.app" --args --show
 fi

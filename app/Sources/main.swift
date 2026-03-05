@@ -102,7 +102,35 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         }
     }
 
+    private func selectTmuxPane() {
+        guard let content = try? String(contentsOfFile: paramFilePath, encoding: .utf8) else { return }
+        let lines = content.components(separatedBy: "\n")
+        guard lines.count > 3 else { return }
+        let tmuxPane = lines[3].trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !tmuxPane.isEmpty else { return }
+
+        let tmuxPaths = ["/opt/homebrew/bin/tmux", "/usr/local/bin/tmux", "/usr/bin/tmux"]
+        guard let tmuxPath = tmuxPaths.first(where: { FileManager.default.fileExists(atPath: $0) }) else { return }
+
+        // Switch the most recently active client to the session containing the pane,
+        // select the window containing the pane, then select the pane itself.
+        // This works across different tmux windows and sessions.
+        for args in [
+            ["switch-client", "-t", tmuxPane],
+            ["select-window", "-t", tmuxPane],
+            ["select-pane", "-t", tmuxPane],
+        ] {
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: tmuxPath)
+            process.arguments = args
+            try? process.run()
+            process.waitUntilExit()
+        }
+    }
+
     private func activateTerminal() {
+        selectTmuxPane()
+
         let workspace = NSWorkspace.shared
         let bundleID = terminalBundleID
 
