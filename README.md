@@ -49,8 +49,9 @@ When Claude Code stops (completes a task or needs input), ClawdNotify:
 
 1. **Always** rings the terminal bell (triggers tab attention in supported terminals)
 2. **If you're away from the terminal**: plays a sound and shows a notification
-3. **If you're in the terminal but different tmux pane**: plays a sound (bell already visible)
-4. **If you're focused on the Claude session**: does nothing extra (you're already there!)
+3. **If you're in the terminal but different tmux window/session**: plays a sound and shows a notification
+4. **If you're in the same tmux window but different pane**: plays a sound (bell already visible)
+5. **If you're focused on the Claude session**: does nothing extra (you're already there!)
 
 ## Configuration
 
@@ -66,6 +67,7 @@ terminal_bundle_id=com.mitchellh.ghostty
 # terminal_bundle_id=org.alacritty
 # terminal_bundle_id=net.kovidgoyal.kitty
 # terminal_bundle_id=com.github.wez.wezterm
+
 ```
 
 ## Requirements
